@@ -1,0 +1,33 @@
+version: '3.8'
+services:
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    ports:
+      - "8080:80"
+
+  node-service:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - DB_HOST=db
+      - DB_DATABASE=mydatabase
+      - DB_USERNAME=myuser
+      - DB_PASSWORD=mypassword
+
+  db:
+    image: mariadb
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    volumes:      
+      - db-data:/var/lib/mysql
+
+volumes:
+  db-data:
